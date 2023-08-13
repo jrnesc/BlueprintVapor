@@ -26,6 +26,23 @@ public struct StringifyMacro: ExpressionMacro {
     }
 }
 
+// @ModelCreation final class Test {}
+//
+// expands to:
+//
+// final class Test {
+// static let schema: String = "Tests"
+// @ID(key: .id) var id: UUID?
+// @Field(key: title) var title: String
+
+// init() {}
+
+// init(id: UUID? = nil, title: String) {
+//    self.id = id
+//    self.title = title
+//   }
+//}
+
 public struct ModelCreationMacro: MemberMacro {
     public static func expansion(
         of node: AttributeSyntax,
@@ -34,7 +51,8 @@ public struct ModelCreationMacro: MemberMacro {
     ) throws -> [DeclSyntax] {
         guard declaration.is(
             ClassDeclSyntax.self
-        ) else {
+        )
+        else {
             let classError = Diagnostic(
                 node: node,
                 message: "This is not a class" as! DiagnosticMessage
@@ -42,20 +60,26 @@ public struct ModelCreationMacro: MemberMacro {
             context.diagnose(classError)
             return []
         }
-        let schema = (declaration as! ClassDeclSyntax).name
-        let title = "title"
+        let schema = declaration.asProtocol(NamedDeclSyntax.self)!.name.trimmedDescription
+        
         return [
-            "static let schema: String = Todos",
-            "@ID(key: .id) var id: UUID?",
-            "@Field(key: \(raw: title)) var title: String",
             """
-            init(){
+            static let schema: String = "\(raw: String(describing: schema))"
+            """,
+            "@ID(key: .id) var id: UUID?",
+            "@Field(key: field1) var _field1: String",
+            "@Field(key: field2) var _field2: String",
+            "@Field(key: field3) var _field3: String",
+            """
+            init() {
             }
             """,
             """
-            init(id: UUID? = nil, title: String) { 
+            init(id: UUID? = nil, _field1: String, _field2: String, _field3: String) {
                 self.id = id
-                self.title = title
+                self._field1 = _field1
+                self._field2 = _field3
+                self._field3 = _field3
             }
             """,
         ]

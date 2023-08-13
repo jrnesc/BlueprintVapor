@@ -32,9 +32,19 @@ final class BlueprintVaporTests: XCTestCase {
         let expanded = [
             "class Test {",
             "\n\n",
-            "    static let schema: String = Test",
+            """
+                static let schema: String = "Test"
+            """,
             "\n\n",
             "    @ID(key: .id) var id: UUID?",
+            "\n\n",
+            """
+                @Field(key: field1) var _field1: String
+
+                @Field(key: field2) var _field2: String
+
+                @Field(key: field3) var _field3: String
+            """,
             "\n\n",
             """
                 init() {
@@ -42,9 +52,11 @@ final class BlueprintVaporTests: XCTestCase {
             """,
             "\n\n",
             """
-                init(id: UUID? = nil, title: String) {
+                init(id: UUID? = nil, _field1: String, _field2: String, _field3: String) {
                     self.id = id
-                    self.title = title
+                    self._field1 = _field1
+                    self._field2 = _field3
+                    self._field3 = _field3
                 }
             }
             """,
@@ -52,7 +64,7 @@ final class BlueprintVaporTests: XCTestCase {
         #if canImport(BlueprintVaporMacros)
         assertMacroExpansion(
             """
-            @ModelCreation class Test {
+            @ModelCreation(field1: "title", field2: "12345", field3: "qwert") class Test {
             }
             """,
             expandedSource: expanded.joined(),

@@ -14,7 +14,11 @@
 //@attached(memberAttribute)
 //@attached(accessor)
 @attached(member, names: named(id), named(title), named(init()), named(init(id:title:)))
-public macro ModelCreation() = #externalMacro(
+public macro ModelCreation(
+    field1: String?,
+    field2: String?,
+    field3: String?
+) = #externalMacro(
     module: "BlueprintVaporMacros",
     type: "ModelCreationMacro"
 )
