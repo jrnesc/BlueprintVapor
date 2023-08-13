@@ -13,7 +13,7 @@
 //@attached(extension)
 //@attached(memberAttribute)
 //@attached(accessor)
-@attached(member, names: named(id), named(title), named(init()), named(init(id:title:)))
+@attached(member, names: arbitrary)
 public macro ModelCreation(
     field1: String?,
     field2: String?,
