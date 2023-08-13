@@ -27,7 +27,8 @@ final class BlueprintVaporTests: XCTestCase {
         throw XCTSkip("macros are only supported when running tests for the host platform")
         #endif
     }
-    
+    // adding a conformance macro that holds values in an enum and that will determine how many fields there will be
+    // also in that enum, include a selection of some common values and your enu
     func testModelMacro() throws {
         let expanded = [
             "class Test {",
@@ -56,18 +57,12 @@ final class BlueprintVaporTests: XCTestCase {
                     id: UUID? = nil,
                     _field1: String,
                     _field2: String,
-                    _field3: String,
-                    field1: String,
-                    field2: String,
-                    field3: String
+                    _field3: String
                 ) {
                     self.id = id
                     self._field1 = _field1
                     self._field2 = _field3
                     self._field3 = _field3
-                    self.field1 = field1
-                    self.field2 = field2
-                    self.field3 = field3
                 }
             }
             """,

@@ -79,18 +79,12 @@ public struct ModelCreationMacro: MemberMacro {
                 id: UUID? = nil,
                 _field1: String,
                 _field2: String,
-                _field3: String,
-                field1: String,
-                field2: String,
-                field3: String
+                _field3: String
             ) {
                 self.id = id
                 self._field1 = _field1
                 self._field2 = _field3
                 self._field3 = _field3
-                self.field1 = field1
-                self.field2 = field2
-                self.field3 = field3
             }
             """,
         ]
