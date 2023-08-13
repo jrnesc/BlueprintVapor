@@ -67,9 +67,9 @@ public struct ModelCreationMacro: MemberMacro {
             static let schema: String = "\(raw: String(describing: schema))"
             """,
             "@ID(key: .id) var id: UUID?",
-            "@Field(key: field1) var _field1: String",
-            "@Field(key: field2) var _field2: String",
-            "@Field(key: field3) var _field3: String",
+            "@Field(key: .string(field1)) var _field1: String",
+            "@Field(key: .string(field2)) var _field2: String",
+            "@Field(key: .string(field3)) var _field3: String",
             """
             init() {
             }
