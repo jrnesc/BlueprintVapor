@@ -16,5 +16,5 @@
 @attached(member, names: named(id), named(title), named(init()), named(init(id:)), named(init(title:)))
 public macro ModelCreation() = #externalMacro(
     module: "BlueprintVaporMacros",
-    type: "BlueprintVaporMacro"
+    type: "ModelCreationMacro"
 )
