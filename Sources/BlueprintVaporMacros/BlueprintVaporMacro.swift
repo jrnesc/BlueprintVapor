@@ -43,9 +43,11 @@ public struct ModelCreationMacro: MemberMacro {
             return []
         }
         let schema = (declaration as! ClassDeclSyntax).name
+        let title = "title"
         return [
-            "static let schema: String = \(schema)",
+            "static let schema: String = Todos",
             "@ID(key: .id) var id: UUID?",
+            "@Field(key: \(raw: title)) var title: String",
             """
             init(){
             }

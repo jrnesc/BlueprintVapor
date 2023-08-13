@@ -13,7 +13,7 @@
 //@attached(extension)
 //@attached(memberAttribute)
 //@attached(accessor)
-@attached(member, names: named(id), named(title), named(init()), named(init(id:)), named(init(title:)))
+@attached(member, names: named(id), named(title), named(init()), named(init(id:title:)))
 public macro ModelCreation() = #externalMacro(
     module: "BlueprintVaporMacros",
     type: "ModelCreationMacro"
