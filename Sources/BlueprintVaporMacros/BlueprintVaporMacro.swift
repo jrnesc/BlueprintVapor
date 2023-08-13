@@ -61,15 +61,16 @@ public struct ModelCreationMacro: MemberMacro {
             return []
         }
         let schema = declaration.asProtocol(NamedDeclSyntax.self)!.name.trimmedDescription
-        
+//        let names = node.asProtocol(MemberTypeSyntax.self)!.argumentList.first
+
         return [
             """
             static let schema: String = "\(raw: String(describing: schema))"
             """,
             "@ID(key: .id) var id: UUID?",
-            "@Field(key: .string(field1)) var _field1: String",
-            "@Field(key: .string(field2)) var _field2: String",
-            "@Field(key: .string(field3)) var _field3: String",
+            "@Field(key: .string(field1)) var _field1: String?",
+            "@Field(key: .string(field2)) var _field2: String?",
+            "@Field(key: .string(field3)) var _field3: String?",
             """
             init() {
             }
@@ -77,9 +78,9 @@ public struct ModelCreationMacro: MemberMacro {
             """
             init(
                 id: UUID? = nil,
-                _field1: String,
-                _field2: String,
-                _field3: String
+                _field1: String? = nil,
+                _field2: String? = nil,
+                _field3: String? = nil
             ) {
                 self.id = id
                 self._field1 = _field1

@@ -40,11 +40,11 @@ final class BlueprintVaporTests: XCTestCase {
             "    @ID(key: .id) var id: UUID?",
             "\n\n",
             """
-                @Field(key: .string(field1)) var _field1: String
+                @Field(key: .string(field1)) var _field1: String?
 
-                @Field(key: .string(field2)) var _field2: String
+                @Field(key: .string(field2)) var _field2: String?
 
-                @Field(key: .string(field3)) var _field3: String
+                @Field(key: .string(field3)) var _field3: String?
             """,
             "\n\n",
             """
@@ -55,9 +55,9 @@ final class BlueprintVaporTests: XCTestCase {
             """
                 init(
                     id: UUID? = nil,
-                    _field1: String,
-                    _field2: String,
-                    _field3: String
+                    _field1: String? = nil,
+                    _field2: String? = nil,
+                    _field3: String? = nil
                 ) {
                     self.id = id
                     self._field1 = _field1
