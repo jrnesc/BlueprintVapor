@@ -64,24 +64,20 @@ public struct ModelCreationMacro: MemberMacro {
             context.diagnose(classError)
             return []
         }
+
         let schema = declaration.asProtocol(NamedDeclSyntax.self)!
             .name
             .trimmedDescription
 
         var new: [String] = []
-        var labels: [String] = []
+
         if let args = node.arguments {
             if let labeledExprList = args.as(LabeledExprListSyntax.self) {
                 for labeledExpr in labeledExprList {
                     if let segmentList = labeledExpr
                         .expression
                         .as(StringLiteralExprSyntax.self)?
-                        .segments,
-                       let argLabel = labeledExpr
-                        .label?
-                        .as(TokenSyntax.self)?
-                        .text {
-                        labels.append("\(argLabel)")
+                        .segments {
                         for segment in segmentList {
                             if let content = segment.as(StringSegmentSyntax.self)?.content {
                                 new.append("\(content)".trimmingCharacters(in: .whitespacesAndNewlines))
@@ -100,9 +96,9 @@ public struct ModelCreationMacro: MemberMacro {
             """,
             "@ID(key: .id) var id: UUID?",
             """
-            @Field(key: .string("\(raw: new[0])")) var \(raw: labels[0]): String
-            @Field(key: .string("\(raw: new[1])")) var \(raw: labels[1]): String
-            @Field(key: .string("\(raw: new[2])")) var \(raw: labels[2]): String
+            @Field(key: .string("\(raw: new[0])")) var \(raw: new[0]): String
+            @Field(key: .string("\(raw: new[1])")) var \(raw: new[1]): String
+            @Field(key: .string("\(raw: new[2])")) var \(raw: new[2]): String
             """,
             """
             init() {
@@ -111,14 +107,14 @@ public struct ModelCreationMacro: MemberMacro {
             """
             init(
                 id: UUID? = nil,
-                \(raw: labels[0]): String,
-                \(raw: labels[1]): String,
-                \(raw: labels[2]): String
+                \(raw: new[0]): String,
+                \(raw: new[1]): String,
+                \(raw: new[2]): String
             ) {
                 self.id = id
-                self.\(raw: labels[0]) = \(raw: labels[0])
-                self.\(raw: labels[1]) = \(raw: labels[1])
-                self.\(raw: labels[2]) = \(raw: labels[2])
+                self.\(raw: new[0]) = \(raw: new[0])
+                self.\(raw: new[1]) = \(raw: new[1])
+                self.\(raw: new[2]) = \(raw: new[2])
             }
             """,
         ]
