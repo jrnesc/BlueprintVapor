@@ -27,8 +27,7 @@ final class BlueprintVaporTests: XCTestCase {
         throw XCTSkip("macros are only supported when running tests for the host platform")
         #endif
     }
-    // adding a conformance macro that holds values in an enum and that will determine how many fields there will be
-    // also in that enum, include a selection of some common values and your enu
+
     func testModelMacro() throws {
         let expanded = [
             "class Test {",
@@ -40,11 +39,9 @@ final class BlueprintVaporTests: XCTestCase {
             "    @ID(key: .id) var id: UUID?",
             "\n\n",
             """
-                @Field(key: .string(field1)) var _field1: String?
-
-                @Field(key: .string(field2)) var _field2: String?
-
-                @Field(key: .string(field3)) var _field3: String?
+                @Field(key: .string("Hello")) var field1: String
+                @Field(key: .string("Test")) var field2: String
+                @Field(key: .string("Again")) var field3: String
             """,
             "\n\n",
             """
@@ -55,14 +52,14 @@ final class BlueprintVaporTests: XCTestCase {
             """
                 init(
                     id: UUID? = nil,
-                    _field1: String? = nil,
-                    _field2: String? = nil,
-                    _field3: String? = nil
+                    field1: String,
+                    field2: String,
+                    field3: String
                 ) {
                     self.id = id
-                    self._field1 = _field1
-                    self._field2 = _field3
-                    self._field3 = _field3
+                    self.field1 = field1
+                    self.field2 = field2
+                    self.field3 = field3
                 }
             }
             """,
@@ -70,7 +67,7 @@ final class BlueprintVaporTests: XCTestCase {
         #if canImport(BlueprintVaporMacros)
         assertMacroExpansion(
             """
-            @ModelCreation(field1: "title", field2: "12345", field3: "qwert") class Test {
+            @ModelCreation(field1: "Hello", field2: "Test", field3: "Again") class Test {
             }
             """,
             expandedSource: expanded.joined(),
