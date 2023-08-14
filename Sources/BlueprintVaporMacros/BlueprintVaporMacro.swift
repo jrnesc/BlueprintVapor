@@ -132,7 +132,7 @@ public struct ModelCreationMacro: MemberMacro {
             
             decl.append(
                 """
-                    id: id: UUID? = nil
+                    id: UUID? = nil
                 ) {
                 """
             )
