@@ -67,7 +67,7 @@ final class BlueprintVaporTests: XCTestCase {
         #if canImport(BlueprintVaporMacros)
         assertMacroExpansion(
             """
-            @ModelCreation(field1: "hello", field2: "test", field3: "again") class Test {
+            @ModelCreation(fields: ["hello", "test", "again"]) class Test {
             }
             """,
             expandedSource: expanded.joined(),

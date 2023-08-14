@@ -69,18 +69,21 @@ public struct ModelCreationMacro: MemberMacro {
             .name
             .trimmedDescription
 
-        var new: [String] = []
+        var fields: [String] = []
+
+        var numbOfFields: Int
 
         if let args = node.arguments {
             if let labeledExprList = args.as(LabeledExprListSyntax.self) {
                 for labeledExpr in labeledExprList {
-                    if let segmentList = labeledExpr
-                        .expression
-                        .as(StringLiteralExprSyntax.self)?
-                        .segments {
-                        for segment in segmentList {
-                            if let content = segment.as(StringSegmentSyntax.self)?.content {
-                                new.append("\(content)".trimmingCharacters(in: .whitespacesAndNewlines))
+                    if let arrayExprElements = labeledExpr.expression
+                        .as(ArrayExprSyntax.self)?
+                        .elements {
+                        for segments in arrayExprElements {
+                            if let segment = segments.expression.as(StringLiteralExprSyntax.self)?.segments {
+                                for content in segment {
+                                    fields.append("\(content)".trimmingCharacters(in: .whitespacesAndNewlines))
+                                }
                             }
                         }
                     }
@@ -88,36 +91,73 @@ public struct ModelCreationMacro: MemberMacro {
             }
         }
 
-//        let codeBlock: [String] = []
-
-        return [
+        var codeBlock: [DeclSyntax] = [
             """
             static let schema: String = "\(raw: schema)"
             """,
             "@ID(key: .id) var id: UUID?",
             """
-            @Field(key: .string("\(raw: new[0])")) var \(raw: new[0]): String
-            @Field(key: .string("\(raw: new[1])")) var \(raw: new[1]): String
-            @Field(key: .string("\(raw: new[2])")) var \(raw: new[2]): String
-            """,
+            init() { }
             """
-            init() {
-            }
-            """,
-            """
-            init(
-                id: UUID? = nil,
-                \(raw: new[0]): String,
-                \(raw: new[1]): String,
-                \(raw: new[2]): String
-            ) {
-                self.id = id
-                self.\(raw: new[0]) = \(raw: new[0])
-                self.\(raw: new[1]) = \(raw: new[1])
-                self.\(raw: new[2]) = \(raw: new[2])
-            }
-            """,
         ]
+        
+        var insertFields: [DeclSyntax] {
+            var decl: [DeclSyntax] = []
+
+            for (_, value) in fields.enumerated() {
+                decl.append(
+                """
+                @Field(key: .string("\(raw: value)")) var \(raw: value): String
+                """
+                )
+            }
+
+            return decl
+        }
+        
+        var insertInitFields: [DeclSyntax] {
+            var decl: [DeclSyntax] = [
+                """
+                init(
+                """
+            ]
+
+            for (_, value) in fields.enumerated() {
+                decl.append(
+                """
+                    \(raw: value): String,
+                """
+                )
+            }
+            
+            decl.append(
+                """
+                    id: id: UUID? = nil
+                ) {
+                """
+            )
+            
+            for (_, value) in fields.enumerated() {
+                decl.append(
+                """
+                    self.\(raw: value.replacingOccurrences(of: "\n\n", with: "")) = \(raw: value)
+                """
+                )
+            }
+            
+            decl.append(
+                """
+                    self.id = id
+                }
+                """
+            )
+
+            return decl
+        }
+        
+        codeBlock.insert(contentsOf: insertFields + insertInitFields, at: 2)
+
+        return codeBlock
     }
 }
 

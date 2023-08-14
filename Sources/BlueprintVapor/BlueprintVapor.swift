@@ -14,11 +14,7 @@
 //@attached(memberAttribute)
 //@attached(accessor)
 @attached(member, names: arbitrary)
-public macro ModelCreation(
-    field1: String?,
-    field2: String?,
-    field3: String?
-) = #externalMacro(
+public macro ModelCreation(fields: [String]) = #externalMacro(
     module: "BlueprintVaporMacros",
     type: "ModelCreationMacro"
 )
